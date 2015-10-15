@@ -11,13 +11,14 @@ class CalculationsController < ApplicationController
     # ================================================================================
 
 
-    @character_count_with_spaces = "Replace this string with your answer."
 
-    @character_count_without_spaces = "Replace this string with your answer."
+    @character_count_with_spaces = @text.length
 
-    @word_count = "Replace this string with your answer."
+    @character_count_without_spaces = @text.gsub(" ", "").length
 
-    @occurrences = "Replace this string with your answer."
+    @word_count = @text.split.length
+
+    @occurrences = @text.downcase.split.count(@special_word)
 
     # ================================================================================
     # Your code goes above.
@@ -38,7 +39,9 @@ class CalculationsController < ApplicationController
     # The principal value the user input is in the decimal @principal.
     # ================================================================================
 
-    @monthly_payment = "Replace this string with your answer."
+    total_payments = @years * 12
+    eff_int = @apr / 100 / 12
+    @monthly_payment = @principal *(eff_int / (1 - (1 + eff_int)**-total_payments))
 
     # ================================================================================
     # Your code goes above.
@@ -60,12 +63,12 @@ class CalculationsController < ApplicationController
     #   number of seconds as a result.
     # ================================================================================
 
-    @seconds = "Replace this string with your answer."
-    @minutes = "Replace this string with your answer."
-    @hours = "Replace this string with your answer."
-    @days = "Replace this string with your answer."
-    @weeks = "Replace this string with your answer."
-    @years = "Replace this string with your answer."
+    @seconds = @ending - @starting
+    @minutes = @seconds / 1.minute
+    @hours = @seconds / 1.hour
+    @days = @seconds / 1.day
+    @weeks = @seconds / 1.week
+    @years = @seconds / 1.year
 
     # ================================================================================
     # Your code goes above.
@@ -82,27 +85,89 @@ class CalculationsController < ApplicationController
     # The numbers the user input are in the array @numbers.
     # ================================================================================
 
-    @sorted_numbers = "Replace this string with your answer."
+    def sum list_of_numbers
+        running_total = 0
+        list_of_numbers.each do |number|
+        running_total = running_total + number
+    end
+    return running_total
+    end
 
-    @count = "Replace this string with your answer."
+    def mean list_of_numbers
+        mean = @sum / @count
+    return mean
+    end
 
-    @minimum = "Replace this string with your answer."
+    def count list_of_numbers
+        count = @numbers.count
+    return count
+    end
 
-    @maximum = "Replace this string with your answer."
+    min = @numbers.min
+    max = @numbers.max
+    range = max - min
 
-    @range = "Replace this string with your answer."
 
-    @median = "Replace this string with your answer."
+    def range list_of_numbers
 
-    @sum = "Replace this string with your answer."
+    end
 
-    @mean = "Replace this string with your answer."
 
-    @variance = "Replace this string with your answer."
+    def variance list_of_numbers
+        variance = 0
+        list_of_numbers.each do |number|
+        variance = variance + (number - (mean list_of_numbers))**2
+    end
+    variance = variance / list_of_numbers.count
+    return variance
+    end
 
-    @standard_deviation = "Replace this string with your answer."
+    def std_dev list_of_numbers
+        std_dev = (variance list_of_numbers) ** (0.5)
+        return std_dev
+    end
 
-    @mode = "Replace this string with your answer."
+    def median list_of_numbers
+    if (count list_of_numbers).odd? == true
+        median = @numbers.sort[((count list_of_numbers)) / 2]
+    else
+        median = (@numbers.sort[(count list_of_numbers) / 2 -1] +
+                @numbers.sort[((count list_of_numbers)  / 2 -1) + 1]) / 2
+    end
+    return median
+    end
+
+    def mode list_of_numbers
+        count_list = {}
+        list_of_numbers.each do |number|
+        number_tracker = number
+        modecount = list_of_numbers.count(number)
+        count_list[number_tracker] =  modecount
+    end
+    return count_list.max_by{|k,v| v}
+    end
+
+    @sorted_numbers = @numbers.sort
+
+    @count = count @numbers
+
+    @minimum = min
+
+    @maximum = max
+
+    @range = range
+
+    @median = median @numbers
+
+    @sum = sum @numbers
+
+    @mean = mean @numbers
+
+    @variance = variance @numbers
+
+    @standard_deviation = std_dev @numbers
+
+    @mode = mode @numbers
 
     # ================================================================================
     # Your code goes above.
